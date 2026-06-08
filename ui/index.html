@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Phone UI</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="phone-wrapper" class="hidden">
         <div id="phone-container">
             <div id="status-bar">
                 <span id="time">12:00</span>
-                <span id="signal">5G</span>
+                <span id="battery"><span id="battery-level">100%</span> 🔋</span>
             </div>
             
             <div id="screen">
-                <div id="home-screen" class="app-screen">
+                
+                <div id="home-screen" class="app-page">
                     <h1 class="nexus-title">NEXUS</h1>
                     
                     <div class="profile-card">
@@ -26,22 +27,38 @@
                         </div>
                         <div class="bank-container">
                             <span class="bank-label">A/C Balance:</span>
-                            <span id="player-bank">$0</span>
+                            <span id="player-bank-home">$0</span>
                         </div>
                     </div>
 
-                    <div class="app-grid">
-                        <div class="app-icon" data-app="settings">
-                            <div class="icon-inner">S</div>
-                            <span>Settings</span>
+                    <div id="app-grid-container" class="app-grid">
                         </div>
-                        <div class="app-icon" data-app="bank">
-                            <div class="icon-inner">B</div>
-                            <span>Bank</span>
+                </div>
+
+                <div id="bank-screen" class="app-page hidden">
+                    <div class="app-header">
+                        <button class="back-btn" onclick="goHome()">◀ Back</button>
+                        <h2>NEXUS BANK</h2>
+                    </div>
+                    
+                    <div class="bank-app-content">
+                        <div class="bank-balance-card nexus-glow">
+                            <span class="bank-label">Available Balance</span>
+                            <h1 id="player-bank-app">$0</h1>
+                        </div>
+
+                        <div class="transfer-section">
+                            <h3>Transfer Funds</h3>
+                            <input type="number" id="transfer-id" placeholder="Account ID (Server ID)">
+                            <input type="number" id="transfer-amount" placeholder="Amount ($)">
+                            <button id="transfer-btn" class="nexus-glow" onclick="processTransfer()">Send Money</button>
                         </div>
                     </div>
                 </div>
-            <div id="home-indicator"></div>
+
+            </div>
+
+            <div id="home-indicator" onclick="goHome()"></div>
         </div>
     </div>
     
