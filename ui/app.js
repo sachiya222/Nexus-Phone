@@ -43,10 +43,10 @@ function openApp(appId) {
     if (appId === "services") document.getElementById('services-screen').classList.remove('hidden');
     if (appId === "nextweet") document.getElementById('nextweet-screen').classList.remove('hidden');
     if (appId === "marketplace") document.getElementById('marketplace-screen').classList.remove('hidden');
+    if (appId === "autosell") document.getElementById('autosell-screen').classList.remove('hidden');
     
     // Static views
     if (appId === "nexgram") document.getElementById('nexgram-screen').classList.remove('hidden'); 
-    if (appId === "autosell") document.getElementById('autosell-screen').classList.remove('hidden'); 
     if (appId === "stocks") document.getElementById('stocks-screen').classList.remove('hidden'); 
 }
 
@@ -92,11 +92,12 @@ function startCall() {
 
 function callService(jobName) {
     fetch(`https://${GetParentResourceName()}/callService`, {
-        method: 'POST', body: JSON.stringify({ job: jobName })
+        method: 'POST', headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+        body: JSON.stringify({ job: jobName })
     }).then(() => goHome());
 }
 
-// --- Compose Modal Logic (NEW!) ---
+// --- Compose Modal Logic ---
 function openModal(type) {
     modalType = type;
     document.getElementById('compose-modal').classList.remove('hidden');
@@ -108,10 +109,19 @@ function openModal(type) {
         document.getElementById('modal-title').innerText = "New Tweet";
         document.getElementById('modal-input-title').classList.add('hidden');
         document.getElementById('modal-input-price').classList.add('hidden');
+        document.getElementById('modal-input-desc').placeholder = "What's happening?";
     } else if (type === 'market') {
         document.getElementById('modal-title').innerText = "List Item";
         document.getElementById('modal-input-title').classList.remove('hidden');
         document.getElementById('modal-input-price').classList.remove('hidden');
+        document.getElementById('modal-input-title').placeholder = "Item Name";
+        document.getElementById('modal-input-desc').placeholder = "Item Description";
+    } else if (type === 'autosell') {
+        document.getElementById('modal-title').innerText = "Sell Vehicle";
+        document.getElementById('modal-input-title').classList.remove('hidden');
+        document.getElementById('modal-input-price').classList.remove('hidden');
+        document.getElementById('modal-input-title').placeholder = "Vehicle Model (e.g., GTR)";
+        document.getElementById('modal-input-desc').placeholder = "Upgrades / Description";
     }
 }
 
@@ -120,27 +130,28 @@ function closeModal() {
 }
 
 function submitPost() {
-    if (modalType === 'tweet') {
-        let msg = document.getElementById('modal-input-desc').value;
-        if (msg.length > 0) {
-            fetch(`https://${GetParentResourceName()}/postTweet`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                body: JSON.stringify({ message: msg })
-            });
-        }
-    } else if (modalType === 'market') {
-        let title = document.getElementById('modal-input-title').value;
-        let desc = document.getElementById('modal-input-desc').value;
-        let price = document.getElementById('modal-input-price').value;
-        if (title.length > 0 && price.length > 0) {
-            fetch(`https://${GetParentResourceName()}/postMarket`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                body: JSON.stringify({ title: title, desc: desc, price: price })
-            });
-        }
+    let title = document.getElementById('modal-input-title').value;
+    let desc = document.getElementById('modal-input-desc').value;
+    let price = document.getElementById('modal-input-price').value;
+
+    if (modalType === 'tweet' && desc.length > 0) {
+        fetch(`https://${GetParentResourceName()}/postTweet`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            body: JSON.stringify({ message: desc })
+        });
+    } else if (modalType === 'market' && title.length > 0 && price.length > 0) {
+        fetch(`https://${GetParentResourceName()}/postMarket`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            body: JSON.stringify({ title: title, desc: desc, price: price })
+        });
+    } else if (modalType === 'autosell' && title.length > 0 && price.length > 0) {
+        fetch(`https://${GetParentResourceName()}/postAutoSell`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            body: JSON.stringify({ vehicle: title, desc: desc, price: price })
+        });
     }
     closeModal();
-    goHome(); // Sends user back to home screen so UI refreshes cleanly on next open
+    goHome();
 }
 
 // --- Live Data Injectors ---
@@ -183,6 +194,26 @@ function injectLiveMarket(marketArray) {
     });
 }
 
+function injectLiveAutoSell(autoSellArray) {
+    const feed = document.getElementById('autosell-feed');
+    feed.innerHTML = "";
+    if (!autoSellArray || autoSellArray.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; color:#888; margin-top:20px;">No vehicles for sale.</div>`;
+        return;
+    }
+    autoSellArray.forEach(car => {
+        feed.innerHTML += `
+            <div class="car-card">
+                <div class="car-details">
+                    <div class="car-title"><span>${car.vehicle_name.toUpperCase()}</span><span style="color:#32CD32">$${car.price.toLocaleString('en-US')}</span></div>
+                    <span class="car-seller" style="margin-bottom: 2px;">Description: ${car.description}</span>
+                    <span class="car-seller">Seller: ${car.seller_name}</span>
+                    <button class="buy-btn" style="background:transparent; border:1px solid #32CD32; color:#32CD32;" onclick="pressDial('${car.seller_number}')">CONTACT SELLER</button>
+                </div>
+            </div>`;
+    });
+}
+
 window.addEventListener('message', function(event) {
     let item = event.data;
     if (item.type === "openPhone") {
@@ -197,6 +228,7 @@ window.addEventListener('message', function(event) {
         
         injectLiveTweets(item.tweets);
         injectLiveMarket(item.market);
+        injectLiveAutoSell(item.autosell);
         
         loadApps();
         document.getElementById('phone-wrapper').classList.remove('hidden');
