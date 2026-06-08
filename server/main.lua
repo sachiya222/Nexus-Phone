@@ -17,3 +17,15 @@ lib.callback.register('nexus_phone:server:GetPlayerProfile', function(source)
     
     return nil
 end)
+-- server/main.lua (Add to bottom)
+
+-- Register the Power Bank as a usable item in ox_inventory
+exports.qbx_core:CreateUseableItem('powerbank', function(source, item)
+    local src = source
+    
+    -- Remove 1 power bank from their inventory
+    exports.ox_inventory:RemoveItem(src, 'powerbank', 1)
+    
+    -- Send a signal to the player's game to charge the phone by 50%
+    TriggerClientEvent('nexus_phone:client:ChargeBattery', src, 50)
+end)
