@@ -1,7 +1,7 @@
 -- server/main.lua
 local exports = exports
 
--- Auto-Build Database (Will do nothing if tables already exist)
+-- Auto-Build Database Additions
 AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then return end
     local sqlCommands = [[
@@ -10,6 +10,7 @@ AddEventHandler('onResourceStart', function(resourceName)
         CREATE TABLE IF NOT EXISTS `nexus_phone_tweets` (`id` int(11) NOT NULL AUTO_INCREMENT, `citizenid` varchar(50) NOT NULL, `firstName` varchar(50) NOT NULL, `lastName` varchar(50) NOT NULL, `handle` varchar(50) NOT NULL, `message` varchar(280) NOT NULL, `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `likes` int(11) NOT NULL DEFAULT '0', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         CREATE TABLE IF NOT EXISTS `nexus_phone_grams` (`id` int(11) NOT NULL AUTO_INCREMENT, `citizenid` varchar(50) NOT NULL, `username` varchar(50) NOT NULL, `image_url` varchar(255) NOT NULL, `caption` varchar(255) DEFAULT NULL, `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, `likes` int(11) NOT NULL DEFAULT '0', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         CREATE TABLE IF NOT EXISTS `nexus_phone_market` (`id` int(11) NOT NULL AUTO_INCREMENT, `citizenid` varchar(50) NOT NULL, `seller_name` varchar(50) NOT NULL, `seller_number` varchar(50) NOT NULL, `item_name` varchar(50) NOT NULL, `price` int(11) NOT NULL, `description` varchar(255) DEFAULT NULL, `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        CREATE TABLE IF NOT EXISTS `nexus_phone_autosell` (`id` int(11) NOT NULL AUTO_INCREMENT, `citizenid` varchar(50) NOT NULL, `seller_name` varchar(50) NOT NULL, `seller_number` varchar(50) NOT NULL, `vehicle_name` varchar(50) NOT NULL, `price` int(11) NOT NULL, `description` varchar(255) DEFAULT NULL, `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         CREATE TABLE IF NOT EXISTS `nexus_phone_settings` (`citizenid` varchar(50) NOT NULL, `wallpaper` varchar(255) DEFAULT 'default', `streamer_mode` int(11) NOT NULL DEFAULT '0', PRIMARY KEY (`citizenid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     ]]
     MySQL.query(sqlCommands, {}, function() end)
@@ -66,6 +67,10 @@ lib.callback.register('nexus_phone:server:GetMarketplace', function(source)
     return MySQL.query.await('SELECT * FROM nexus_phone_market ORDER BY time DESC LIMIT 50', {})
 end)
 
+lib.callback.register('nexus_phone:server:GetAutoSell', function(source)
+    return MySQL.query.await('SELECT * FROM nexus_phone_autosell ORDER BY time DESC LIMIT 50', {})
+end)
+
 -- POST Requests (Writing to DB)
 RegisterNetEvent('nexus_phone:server:PostTweet', function(message)
     local src = source
@@ -73,13 +78,8 @@ RegisterNetEvent('nexus_phone:server:PostTweet', function(message)
     if not Player or not message then return end
 
     local handle = Player.PlayerData.charinfo.firstname .. "_" .. Player.PlayerData.charinfo.lastname
-    
     MySQL.insert('INSERT INTO nexus_phone_tweets (citizenid, firstName, lastName, handle, message) VALUES (?, ?, ?, ?, ?)', {
-        Player.PlayerData.citizenid,
-        Player.PlayerData.charinfo.firstname,
-        Player.PlayerData.charinfo.lastname,
-        handle,
-        message
+        Player.PlayerData.citizenid, Player.PlayerData.charinfo.firstname, Player.PlayerData.charinfo.lastname, handle, message
     })
 end)
 
@@ -89,11 +89,34 @@ RegisterNetEvent('nexus_phone:server:PostMarket', function(title, desc, price)
     if not Player or not title or not price then return end
 
     MySQL.insert('INSERT INTO nexus_phone_market (citizenid, seller_name, seller_number, item_name, price, description) VALUES (?, ?, ?, ?, ?, ?)', {
-        Player.PlayerData.citizenid,
-        Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname,
-        Player.PlayerData.charinfo.phone,
-        title,
-        tonumber(price),
-        desc
+        Player.PlayerData.citizenid, Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname, Player.PlayerData.charinfo.phone, title, tonumber(price), desc
     })
+end)
+
+RegisterNetEvent('nexus_phone:server:PostAutoSell', function(vehicle, desc, price)
+    local src = source
+    local Player = exports.qbx_core:GetPlayer(src)
+    if not Player or not vehicle or not price then return end
+
+    MySQL.insert('INSERT INTO nexus_phone_autosell (citizenid, seller_name, seller_number, vehicle_name, price, description) VALUES (?, ?, ?, ?, ?, ?)', {
+        Player.PlayerData.citizenid, Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname, Player.PlayerData.charinfo.phone, vehicle, tonumber(price), desc
+    })
+end)
+
+-- Emergency Dispatch Router
+RegisterNetEvent('nexus_phone:server:CallService', function(jobName, coords)
+    local src = source
+    local players = GetPlayers()
+    
+    -- Loop through all active players on the server
+    for _, playerId in ipairs(players) do
+        local targetPlayer = exports.qbx_core:GetPlayer(tonumber(playerId))
+        if targetPlayer then
+            -- If their Qbox job matches the service requested (police, ambulance, mechanic)
+            if targetPlayer.PlayerData.job.name == jobName and targetPlayer.PlayerData.job.onduty then
+                -- Send the GPS coordinates directly to their game
+                TriggerClientEvent('nexus_phone:client:ReceiveDispatch', targetPlayer.PlayerData.source, jobName, coords)
+            end
+        end
+    end
 end)
