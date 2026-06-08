@@ -126,3 +126,58 @@ body {
     background-color: rgba(255, 255, 255, 0.3);
     border-radius: 10px;
 }
+/* Custom Datapad Profile Card */
+.profile-card {
+    background: linear-gradient(135deg, rgba(26,26,36,0.9), rgba(15,15,19,0.95));
+    border-left: 4px solid #32CD32;
+    margin: 10px 20px 20px 20px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#player-name {
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+#player-job {
+    color: #a0a0b0;
+    font-size: 10px;
+    letter-spacing: 2px;
+    background: rgba(255,255,255,0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.bank-container {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.bank-label {
+    color: #68686A;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+#player-bank {
+    color: #32CD32; /* Lime Green Glow */
+    font-size: 24px;
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(50, 205, 50, 0.4);
+}
