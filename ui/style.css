@@ -1,100 +1,17 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Rajdhani', sans-serif;
-    user-select: none;
-}
-
-body {
-    background: transparent;
-    overflow: hidden;
-}
-
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; user-select: none; }
+body { background: transparent; overflow: hidden; }
 .hidden { display: none !important; }
 
-#phone-wrapper {
-    position: absolute;
-    bottom: 20px;
-    right: 50px;
-    width: 320px;
-    height: 650px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+#phone-wrapper { position: absolute; bottom: 20px; right: 50px; width: 320px; height: 650px; display: flex; justify-content: center; align-items: center; animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-@keyframes slideUp {
-    from { transform: translateY(100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
+#phone-container { width: 100%; height: 100%; background-color: #0f0f13; border-radius: 40px; border: 6px solid #1a1a24; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(50, 205, 50, 0.15), inset 0 0 10px rgba(0,0,0,0.8); }
+#status-bar { width: 100%; height: 30px; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; color: white; font-size: 14px; font-weight: 600; position: absolute; top: 0; z-index: 10; }
+#screen { width: 100%; height: 100%; padding-top: 40px; background: radial-gradient(circle at center, #1a1a24 0%, #0f0f13 100%); position: relative; }
+.app-page { width: 100%; height: 100%; position: absolute; top: 0; left: 0; padding-top: 40px; background: radial-gradient(circle at center, #1a1a24 0%, #0f0f13 100%); }
 
-#phone-container {
-    width: 100%;
-    height: 100%;
-    background-color: #0f0f13;
-    border-radius: 40px;
-    border: 6px solid #1a1a24;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(50, 205, 50, 0.15), inset 0 0 10px rgba(0,0,0,0.8);
-}
-
-#status-bar {
-    width: 100%;
-    height: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 25px;
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-    position: absolute;
-    top: 0;
-    z-index: 10;
-}
-
-#screen {
-    width: 100%;
-    height: 100%;
-    padding-top: 40px;
-    background: radial-gradient(circle at center, #1a1a24 0%, #0f0f13 100%);
-    position: relative;
-}
-
-.app-page {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding-top: 40px;
-    background: radial-gradient(circle at center, #1a1a24 0%, #0f0f13 100%);
-}
-
-.nexus-title {
-    text-align: center;
-    color: #32CD32;
-    font-size: 32px;
-    letter-spacing: 4px;
-    margin-top: 10px;
-    text-shadow: 0 0 10px rgba(50, 205, 50, 0.5);
-}
-
-.profile-card {
-    background: linear-gradient(135deg, rgba(26,26,36,0.9), rgba(15,15,19,0.95));
-    border-left: 4px solid #32CD32;
-    margin: 10px 20px 20px 20px;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
+.nexus-title { text-align: center; color: #32CD32; font-size: 32px; letter-spacing: 4px; margin-top: 10px; text-shadow: 0 0 10px rgba(50, 205, 50, 0.5); }
+.profile-card { background: linear-gradient(135deg, rgba(26,26,36,0.9), rgba(15,15,19,0.95)); border-left: 4px solid #32CD32; margin: 10px 20px 20px 20px; padding: 15px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); display: flex; flex-direction: column; gap: 5px; }
 .profile-header { display: flex; justify-content: space-between; align-items: center; }
 #player-name { color: white; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
 #player-job { color: #a0a0b0; font-size: 10px; letter-spacing: 2px; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; }
@@ -102,123 +19,58 @@ body {
 .bank-label { color: #68686A; font-size: 12px; font-weight: 600; text-transform: uppercase; }
 #player-bank-home { color: #32CD32; font-size: 24px; font-weight: 800; text-shadow: 0 0 10px rgba(50, 205, 50, 0.4); }
 
-.app-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    padding: 20px;
-}
-
-.app-icon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
+.app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 20px; }
+.app-icon { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: transform 0.2s; }
 .app-icon:hover { transform: scale(1.05); }
-
-.icon-inner {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(145deg, #22222f, #1a1a24);
-    border: 1px solid #32CD32;
-    border-radius: 14px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 24px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-}
-
+.icon-inner { width: 50px; height: 50px; background: linear-gradient(145deg, #22222f, #1a1a24); border: 1px solid #32CD32; border-radius: 14px; display: flex; justify-content: center; align-items: center; color: white; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 .app-icon span { color: #a0a0b0; font-size: 12px; font-weight: 600; }
 
-.nexus-glow {
-    box-shadow: 0 0 10px rgba(50, 205, 50, 0.4), 0 0 20px rgba(50, 205, 50, 0.2);
-    transition: box-shadow 0.3s ease;
-}
+.nexus-glow { box-shadow: 0 0 10px rgba(50, 205, 50, 0.4), 0 0 20px rgba(50, 205, 50, 0.2); transition: box-shadow 0.3s ease; }
 .nexus-glow:hover { box-shadow: 0 0 15px rgba(50, 205, 50, 0.6), 0 0 30px rgba(50, 205, 50, 0.4); }
 
-#home-indicator {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 5px;
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    cursor: pointer;
-    z-index: 100;
-}
+#home-indicator { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 100px; height: 5px; background-color: rgba(255, 255, 255, 0.3); border-radius: 10px; cursor: pointer; z-index: 100; }
 
-/* BANK APP STYLES */
-.app-header {
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    height: 40px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.back-btn {
-    background: none;
-    border: none;
-    color: #32CD32;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-}
-.app-header h2 {
-    color: white;
-    font-size: 16px;
-    margin-left: auto;
-    margin-right: auto;
-    letter-spacing: 2px;
-}
+/* APP HEADERS */
+.app-header { display: flex; align-items: center; padding: 0 20px; height: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.back-btn, .new-msg-btn { background: none; border: none; color: #32CD32; font-size: 14px; font-weight: 700; cursor: pointer; }
+.new-msg-btn { font-size: 24px; }
+.app-header h2 { color: white; font-size: 16px; margin-left: auto; margin-right: auto; letter-spacing: 2px; }
+
+/* BANK APP */
 .bank-app-content { padding: 20px; }
-.bank-balance-card {
-    background: #1a1a24;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    border: 1px solid #32CD32;
-    margin-bottom: 30px;
-}
-#player-bank-app {
-    color: white;
-    font-size: 36px;
-    margin-top: 5px;
-}
-.transfer-section h3 {
-    color: #a0a0b0;
-    font-size: 14px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-.transfer-section input {
-    width: 100%;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid #333;
-    color: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    font-size: 16px;
-    outline: none;
-}
+.bank-balance-card { background: #1a1a24; border-radius: 10px; padding: 20px; text-align: center; border: 1px solid #32CD32; margin-bottom: 30px; }
+#player-bank-app { color: white; font-size: 36px; margin-top: 5px; }
+.transfer-section h3 { color: #a0a0b0; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; }
+.transfer-section input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #333; color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 16px; outline: none; }
 .transfer-section input:focus { border-color: #32CD32; }
-#transfer-btn {
-    width: 100%;
-    background: #32CD32;
-    color: black;
-    border: none;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 800;
-    cursor: pointer;
-    text-transform: uppercase;
-}
+#transfer-btn { width: 100%; background: #32CD32; color: black; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+
+/* PHONE APP */
+.dialer-container { display: flex; flex-direction: column; align-items: center; padding: 20px; height: calc(100% - 40px); }
+#dial-display { color: white; font-size: 32px; height: 40px; margin-bottom: 20px; letter-spacing: 2px; }
+.dial-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+.dial-pad button { width: 60px; height: 60px; border-radius: 50%; background: #22222f; border: 1px solid rgba(50, 205, 50, 0.3); color: white; font-size: 24px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+.dial-pad button:active { background: #32CD32; color: black; }
+.dial-actions { display: flex; gap: 20px; align-items: center; }
+.call-btn { width: 70px; height: 70px; border-radius: 50%; background: #32CD32; border: none; font-size: 30px; cursor: pointer; }
+.clear-btn { background: none; border: none; color: #a0a0b0; font-size: 20px; cursor: pointer; padding: 10px; }
+
+/* MESSAGES APP */
+.message-list { padding: 10px; }
+.msg-thread { display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-bottom: 10px; border-left: 3px solid transparent; cursor: pointer; }
+.msg-thread:hover { background: rgba(255,255,255,0.1); border-left: 3px solid #32CD32; }
+.msg-avatar { width: 40px; height: 40px; border-radius: 50%; background: #32CD32; display: flex; justify-content: center; align-items: center; color: black; font-weight: bold; }
+.msg-preview h4 { color: white; font-size: 14px; }
+.msg-preview p { color: #a0a0b0; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 180px; }
+
+/* SETTINGS APP */
+.settings-list { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+.setting-item { display: flex; justify-content: space-between; align-items: center; background: #1a1a24; padding: 15px; border-radius: 8px; color: white; font-size: 14px; font-weight: 600; border: 1px solid rgba(255,255,255,0.05); }
+.setting-value { color: #32CD32; }
+/* Toggle Switch */
+.switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: #32CD32; }
+input:checked + .slider:before { transform: translateX(20px); }
