@@ -4,8 +4,9 @@ const appRegistry = [
     { id: "bank", name: "Nexus Bank", icon: "🏦", baseApp: true },
     { id: "settings", name: "Settings", icon: "⚙️", baseApp: true },
     { id: "appstore", name: "App Store", icon: "🛒", baseApp: true },
-    { id: "nextweet", name: "NexTweet", icon: "🐦", baseApp: false },
-    { id: "services", name: "Services", icon: "🚨", baseApp: false }
+    { id: "nextweet", name: "NexTweet", icon: "🐦", baseApp: true }, // Set to true for testing
+    { id: "nexgram", name: "NexGram", icon: "📷", baseApp: true },  // Set to true for testing
+    { id: "nexdate", name: "NexDate", icon: "🔥", baseApp: true }   // Set to true for testing
 ];
 
 let currentBankBalance = 0;
@@ -32,6 +33,17 @@ function openApp(appId) {
     if (appId === "phone") document.getElementById('phone-screen').classList.remove('hidden');
     if (appId === "messages") document.getElementById('messages-screen').classList.remove('hidden');
     if (appId === "settings") document.getElementById('settings-screen').classList.remove('hidden');
+    if (appId === "nextweet") {
+        document.getElementById('nextweet-screen').classList.remove('hidden');
+        loadDummyTweets();
+    }
+    if (appId === "nexgram") {
+        document.getElementById('nexgram-screen').classList.remove('hidden');
+        loadDummyGrams();
+    }
+    if (appId === "nexdate") {
+        document.getElementById('nexdate-screen').classList.remove('hidden');
+    }
 }
 
 function goHome() {
@@ -39,12 +51,11 @@ function goHome() {
     document.getElementById('home-screen').classList.remove('hidden');
 }
 
-// Bank Logic
+// --- Bank & Dialer Logic ---
 function processTransfer() {
     let targetId = document.getElementById('transfer-id').value;
     let amount = document.getElementById('transfer-amount').value;
     if (!targetId || !amount || amount <= 0) return;
-
     fetch(`https://${GetParentResourceName()}/transferMoney`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=UTF-8' },
@@ -56,7 +67,6 @@ function processTransfer() {
     });
 }
 
-// Dialer Logic
 function pressDial(num) {
     if (dialNumber.length < 10) {
         dialNumber += num;
@@ -69,7 +79,6 @@ function clearDial() {
 }
 function startCall() {
     if(dialNumber.length > 0) {
-        // Send to FiveM client
         fetch(`https://${GetParentResourceName()}/startCall`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json; charset=UTF-8' },
@@ -78,6 +87,47 @@ function startCall() {
     }
 }
 
+// --- Social Dummy Data Injectors ---
+function loadDummyTweets() {
+    const feed = document.getElementById('tweet-feed');
+    feed.innerHTML = `
+        <div class="tweet">
+            <div class="tweet-header">
+                <div class="tweet-avatar" style="background:#32CD32"></div>
+                <span class="tweet-user">Nexus Mayor</span>
+                <span class="tweet-handle">@CityHall</span>
+            </div>
+            <div class="tweet-content">Taxes have been lowered by 2% city-wide. Enjoy the weekend! 🏙️📉</div>
+            <div class="tweet-actions"><span>💬 12</span><span>🔁 5</span><span>❤️ 104</span></div>
+        </div>
+        <div class="tweet">
+            <div class="tweet-header">
+                <div class="tweet-avatar" style="background:#e74c3c"></div>
+                <span class="tweet-user">Anonymous</span>
+                <span class="tweet-handle">@Ghost</span>
+            </div>
+            <div class="tweet-content">Anyone selling a heavy pistol? DM me.</div>
+            <div class="tweet-actions"><span>💬 0</span><span>🔁 0</span><span>❤️ 2</span></div>
+        </div>
+    `;
+}
+
+function loadDummyGrams() {
+    const feed = document.getElementById('gram-feed');
+    feed.innerHTML = `
+        <div class="gram-post">
+            <div class="gram-header">
+                <div class="tweet-avatar" style="background:#9b59b6"></div>
+                <span class="tweet-user">StreetKing</span>
+            </div>
+            <div class="gram-image">New Car Pic Here</div>
+            <div class="gram-actions">🤍 💬 ↗️</div>
+            <div class="gram-caption"><b>StreetKing</b> Just picked up the new GTR. Nexus City ain't ready. 🏎️💨</div>
+        </div>
+    `;
+}
+
+// --- FiveM Client Bridge ---
 window.addEventListener('message', function(event) {
     let item = event.data;
     
@@ -89,8 +139,6 @@ window.addEventListener('message', function(event) {
         document.getElementById('player-bank-home').innerText = "$" + currentBankBalance.toLocaleString('en-US');
         document.getElementById('player-bank-app').innerText = "$" + currentBankBalance.toLocaleString('en-US');
         document.getElementById('battery-level').innerText = item.battery + "%";
-        
-        // Load Phone Number into settings
         document.getElementById('my-phone-number').innerText = item.player.phoneNumber || "Unknown";
         
         loadApps();
