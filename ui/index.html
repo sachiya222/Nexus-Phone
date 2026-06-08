@@ -119,23 +119,19 @@
                         <h2 style="color: #1DA1F2;">NexTweet</h2>
                         <button class="new-msg-btn" style="color: #1DA1F2;">✎</button>
                     </div>
-                    <div class="social-feed" id="tweet-feed">
-                        </div>
+                    <div class="social-feed" id="tweet-feed"></div>
                 </div>
 
                 <div id="nexgram-screen" class="app-page hidden">
                     <div class="app-header">
                         <button class="back-btn" onclick="goHome()">◀</button>
-                        <h2 style="background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">NexGram</h2>
+                        <h2 style="background: -webkit-linear-gradient(45deg, #f09433, #bc1888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">NexGram</h2>
                         <button class="new-msg-btn">+</button>
                     </div>
                     <div class="stories-bar">
                         <div class="story-circle active-story"><div class="story-inner">You</div></div>
-                        <div class="story-circle"><div class="story-inner">S</div></div>
-                        <div class="story-circle"><div class="story-inner">J</div></div>
                     </div>
-                    <div class="social-feed" id="gram-feed">
-                        </div>
+                    <div class="social-feed" id="gram-feed"></div>
                 </div>
 
                 <div id="nexdate-screen" class="app-page hidden">
@@ -154,6 +150,57 @@
                         <div class="date-controls">
                             <button class="date-btn pass-btn">❌</button>
                             <button class="date-btn like-btn">💚</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="marketplace-screen" class="app-page hidden">
+                    <div class="app-header">
+                        <button class="back-btn" onclick="goHome()">◀</button>
+                        <h2>MARKETPLACE</h2>
+                        <button class="new-msg-btn">＋</button>
+                    </div>
+                    <div class="market-grid" id="market-feed"></div>
+                </div>
+
+                <div id="autosell-screen" class="app-page hidden">
+                    <div class="app-header">
+                        <button class="back-btn" onclick="goHome()">◀</button>
+                        <h2>AUTOSELL</h2>
+                        <button class="new-msg-btn">＋</button>
+                    </div>
+                    <div class="autosell-list" id="autosell-feed"></div>
+                </div>
+
+                <div id="stocks-screen" class="app-page hidden">
+                    <div class="app-header">
+                        <button class="back-btn" onclick="goHome()">◀</button>
+                        <h2>EXCHANGE</h2>
+                    </div>
+                    <div class="stock-portfolio">
+                        <span>Portfolio Value</span>
+                        <h2>$0.00</h2>
+                    </div>
+                    <div class="stock-list" id="stock-feed"></div>
+                </div>
+
+                <div id="services-screen" class="app-page hidden">
+                    <div class="app-header">
+                        <button class="back-btn" onclick="goHome()">◀</button>
+                        <h2>SERVICES</h2>
+                    </div>
+                    <div class="services-grid">
+                        <div class="service-btn" style="border-color: #3498db; color: #3498db;" onclick="callService('police')">
+                            <h1>🚨</h1><span>POLICE</span>
+                        </div>
+                        <div class="service-btn" style="border-color: #e74c3c; color: #e74c3c;" onclick="callService('ambulance')">
+                            <h1>🚑</h1><span>EMS</span>
+                        </div>
+                        <div class="service-btn" style="border-color: #f1c40f; color: #f1c40f;" onclick="callService('mechanic')">
+                            <h1>🔧</h1><span>MECHANIC</span>
+                        </div>
+                        <div class="service-btn" style="border-color: #e67e22; color: #e67e22;" onclick="callService('taxi')">
+                            <h1>🚕</h1><span>TAXI</span>
                         </div>
                     </div>
                 </div>
