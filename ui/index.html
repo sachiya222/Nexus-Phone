@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Phone UI</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="phone-wrapper" class="hidden">
+        <div id="phone-container">
+            <div id="status-bar">
+                <span id="time">12:00</span>
+                <span id="signal">5G</span>
+            </div>
+            
+            <div id="screen">
+                <div id="home-screen" class="app-screen">
+                    <h1 class="nexus-title">NEXUS</h1>
+                    <div class="app-grid">
+                        <div class="app-icon" data-app="settings">
+                            <div class="icon-inner">S</div>
+                            <span>Settings</span>
+                        </div>
+                        <div class="app-icon" data-app="bank">
+                            <div class="icon-inner">B</div>
+                            <span>Bank</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="home-indicator"></div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
