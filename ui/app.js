@@ -2,11 +2,15 @@ const appRegistry = [
     { id: "phone", name: "Phone", icon: "📞", baseApp: true },
     { id: "messages", name: "Messages", icon: "💬", baseApp: true },
     { id: "bank", name: "Nexus Bank", icon: "🏦", baseApp: true },
-    { id: "settings", name: "Settings", icon: "⚙️", baseApp: true },
     { id: "appstore", name: "App Store", icon: "🛒", baseApp: true },
-    { id: "nextweet", name: "NexTweet", icon: "🐦", baseApp: true }, // Set to true for testing
-    { id: "nexgram", name: "NexGram", icon: "📷", baseApp: true },  // Set to true for testing
-    { id: "nexdate", name: "NexDate", icon: "🔥", baseApp: true }   // Set to true for testing
+    { id: "nextweet", name: "NexTweet", icon: "🐦", baseApp: true },
+    { id: "nexgram", name: "NexGram", icon: "📷", baseApp: true },
+    { id: "marketplace", name: "Market", icon: "🛍️", baseApp: true }, 
+    { id: "autosell", name: "AutoSell", icon: "🚗", baseApp: true },
+    { id: "stocks", name: "Stocks", icon: "📈", baseApp: true },
+    { id: "services", name: "Services", icon: "🚨", baseApp: true },
+    { id: "nexdate", name: "NexDate", icon: "🔥", baseApp: true },
+    { id: "settings", name: "Settings", icon: "⚙️", baseApp: true }
 ];
 
 let currentBankBalance = 0;
@@ -33,17 +37,14 @@ function openApp(appId) {
     if (appId === "phone") document.getElementById('phone-screen').classList.remove('hidden');
     if (appId === "messages") document.getElementById('messages-screen').classList.remove('hidden');
     if (appId === "settings") document.getElementById('settings-screen').classList.remove('hidden');
-    if (appId === "nextweet") {
-        document.getElementById('nextweet-screen').classList.remove('hidden');
-        loadDummyTweets();
-    }
-    if (appId === "nexgram") {
-        document.getElementById('nexgram-screen').classList.remove('hidden');
-        loadDummyGrams();
-    }
-    if (appId === "nexdate") {
-        document.getElementById('nexdate-screen').classList.remove('hidden');
-    }
+    if (appId === "nexdate") document.getElementById('nexdate-screen').classList.remove('hidden');
+    if (appId === "services") document.getElementById('services-screen').classList.remove('hidden');
+    
+    if (appId === "nextweet") { document.getElementById('nextweet-screen').classList.remove('hidden'); loadDummyTweets(); }
+    if (appId === "nexgram") { document.getElementById('nexgram-screen').classList.remove('hidden'); loadDummyGrams(); }
+    if (appId === "marketplace") { document.getElementById('marketplace-screen').classList.remove('hidden'); loadDummyMarket(); }
+    if (appId === "autosell") { document.getElementById('autosell-screen').classList.remove('hidden'); loadDummyAutoSell(); }
+    if (appId === "stocks") { document.getElementById('stocks-screen').classList.remove('hidden'); loadDummyStocks(); }
 }
 
 function goHome() {
@@ -67,63 +68,57 @@ function processTransfer() {
     });
 }
 
-function pressDial(num) {
-    if (dialNumber.length < 10) {
-        dialNumber += num;
-        document.getElementById('dial-display').innerText = dialNumber;
-    }
-}
-function clearDial() {
-    dialNumber = dialNumber.slice(0, -1);
-    document.getElementById('dial-display').innerText = dialNumber;
-}
+function pressDial(num) { if (dialNumber.length < 10) { dialNumber += num; document.getElementById('dial-display').innerText = dialNumber; } }
+function clearDial() { dialNumber = dialNumber.slice(0, -1); document.getElementById('dial-display').innerText = dialNumber; }
 function startCall() {
     if(dialNumber.length > 0) {
-        fetch(`https://${GetParentResourceName()}/startCall`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-            body: JSON.stringify({ number: dialNumber })
-        });
+        fetch(`https://${GetParentResourceName()}/startCall`, { method: 'POST', body: JSON.stringify({ number: dialNumber }) });
     }
 }
 
-// --- Social Dummy Data Injectors ---
+// --- Emergency Services Logic ---
+function callService(jobName) {
+    fetch(`https://${GetParentResourceName()}/callService`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+        body: JSON.stringify({ job: jobName })
+    }).then(() => goHome());
+}
+
+// --- Economy & Social Dummy Data Injectors ---
 function loadDummyTweets() {
-    const feed = document.getElementById('tweet-feed');
-    feed.innerHTML = `
-        <div class="tweet">
-            <div class="tweet-header">
-                <div class="tweet-avatar" style="background:#32CD32"></div>
-                <span class="tweet-user">Nexus Mayor</span>
-                <span class="tweet-handle">@CityHall</span>
+    document.getElementById('tweet-feed').innerHTML = `
+        <div class="tweet"><div class="tweet-header"><div class="tweet-avatar" style="background:#32CD32"></div><span class="tweet-user">Nexus Mayor</span><span class="tweet-handle">@CityHall</span></div><div class="tweet-content">Taxes have been lowered by 2% city-wide. Enjoy the weekend! 🏙️📉</div></div>
+    `;
+}
+function loadDummyGrams() {
+    document.getElementById('gram-feed').innerHTML = `
+        <div class="gram-post"><div class="gram-header"><div class="tweet-avatar" style="background:#9b59b6"></div><span class="tweet-user">StreetKing</span></div><div class="gram-image">Car Pic</div><div class="gram-caption"><b>StreetKing</b> Just picked up the new GTR. 🏎️💨</div></div>
+    `;
+}
+function loadDummyMarket() {
+    document.getElementById('market-feed').innerHTML = `
+        <div class="market-item"><div class="market-icon">📱</div><div class="market-name">Hacked Datapad</div><div class="market-price">$5,000</div><button class="buy-btn">BUY</button></div>
+        <div class="market-item"><div class="market-icon">💊</div><div class="market-name">Bandages (x10)</div><div class="market-price">$500</div><button class="buy-btn">BUY</button></div>
+    `;
+}
+function loadDummyAutoSell() {
+    document.getElementById('autosell-feed').innerHTML = `
+        <div class="car-card">
+            <div class="car-img">Elegy Retro Custom Image</div>
+            <div class="car-details">
+                <div class="car-title"><span>Elegy Retro</span><span style="color:#32CD32">$85,000</span></div>
+                <span class="car-seller">Seller: Ghost#1992</span>
+                <button class="buy-btn" style="background:transparent; border:1px solid #32CD32; color:#32CD32;">CONTACT SELLER</button>
             </div>
-            <div class="tweet-content">Taxes have been lowered by 2% city-wide. Enjoy the weekend! 🏙️📉</div>
-            <div class="tweet-actions"><span>💬 12</span><span>🔁 5</span><span>❤️ 104</span></div>
-        </div>
-        <div class="tweet">
-            <div class="tweet-header">
-                <div class="tweet-avatar" style="background:#e74c3c"></div>
-                <span class="tweet-user">Anonymous</span>
-                <span class="tweet-handle">@Ghost</span>
-            </div>
-            <div class="tweet-content">Anyone selling a heavy pistol? DM me.</div>
-            <div class="tweet-actions"><span>💬 0</span><span>🔁 0</span><span>❤️ 2</span></div>
         </div>
     `;
 }
-
-function loadDummyGrams() {
-    const feed = document.getElementById('gram-feed');
-    feed.innerHTML = `
-        <div class="gram-post">
-            <div class="gram-header">
-                <div class="tweet-avatar" style="background:#9b59b6"></div>
-                <span class="tweet-user">StreetKing</span>
-            </div>
-            <div class="gram-image">New Car Pic Here</div>
-            <div class="gram-actions">🤍 💬 ↗️</div>
-            <div class="gram-caption"><b>StreetKing</b> Just picked up the new GTR. Nexus City ain't ready. 🏎️💨</div>
-        </div>
+function loadDummyStocks() {
+    document.getElementById('stock-feed').innerHTML = `
+        <div class="stock-row"><div class="stock-info"><h4>NEXUS</h4><span>Nexus City Bond</span></div><div class="stock-price"><h4>$124.50</h4><span class="stock-change">+2.4%</span></div></div>
+        <div class="stock-row"><div class="stock-info"><h4>QBIT</h4><span>Qbox Crypto</span></div><div class="stock-price"><h4>$8,932.10</h4><span class="stock-change change-neg">-1.2%</span></div></div>
+        <div class="stock-row"><div class="stock-info"><h4>LIME</h4><span>Lime Tech</span></div><div class="stock-price"><h4>$45.00</h4><span class="stock-change">+8.9%</span></div></div>
     `;
 }
 
@@ -157,10 +152,6 @@ window.addEventListener('message', function(event) {
 
 document.onkeyup = function(data) {
     if (data.key == "Escape") {
-        fetch(`https://${GetParentResourceName()}/closePhone`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-            body: JSON.stringify({})
-        });
+        fetch(`https://${GetParentResourceName()}/closePhone`, { method: 'POST', body: JSON.stringify({}) });
     }
 };
