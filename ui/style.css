@@ -27,7 +27,6 @@ body { background: transparent; overflow: hidden; }
 .app-icon span { color: #a0a0b0; font-size: 12px; font-weight: 600; }
 .nexus-glow { box-shadow: 0 0 10px rgba(50, 205, 50, 0.4), 0 0 20px rgba(50, 205, 50, 0.2); transition: box-shadow 0.3s ease; }
 .nexus-glow:hover { box-shadow: 0 0 15px rgba(50, 205, 50, 0.6), 0 0 30px rgba(50, 205, 50, 0.4); }
-
 #home-indicator { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 100px; height: 5px; background-color: rgba(255, 255, 255, 0.3); border-radius: 10px; cursor: pointer; z-index: 100; }
 
 .app-header { display: flex; align-items: center; padding: 0 20px; height: 40px; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(15,15,19,0.9); position: sticky; top: 0; z-index: 50; }
@@ -66,7 +65,7 @@ body { background: transparent; overflow: hidden; }
 .tweet-avatar { width: 35px; height: 35px; border-radius: 50%; background: #333; }
 .tweet-user { color: white; font-weight: 700; font-size: 14px; }
 .tweet-handle { color: #888; font-size: 12px; }
-.tweet-content { color: #ddd; font-size: 14px; margin-left: 45px; margin-bottom: 10px; line-height: 1.4; }
+.tweet-content { color: #ddd; font-size: 14px; margin-left: 45px; margin-bottom: 10px; line-height: 1.4; word-wrap: break-word;}
 .stories-bar { display: flex; gap: 10px; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); overflow-x: auto; }
 .story-circle { width: 60px; height: 60px; border-radius: 50%; background: #333; padding: 2px; display: flex; justify-content: center; align-items: center; }
 .active-story { background: linear-gradient(45deg, #f09433, #bc1888); }
@@ -74,7 +73,6 @@ body { background: transparent; overflow: hidden; }
 .gram-post { margin-bottom: 20px; }
 .gram-header { display: flex; align-items: center; gap: 10px; padding: 10px 15px; }
 .gram-image { width: 100%; height: 250px; background: #222; display: flex; justify-content: center; align-items: center; color: #555; }
-.gram-actions { padding: 10px 15px; display: flex; gap: 15px; color: white; font-size: 20px; }
 .gram-caption { padding: 0 15px; color: white; font-size: 13px; }
 .date-container { display: flex; flex-direction: column; align-items: center; padding: 20px; justify-content: center; }
 .date-card { width: 100%; height: 380px; background: #1a1a24; border-radius: 15px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); }
@@ -117,3 +115,15 @@ body { background: transparent; overflow: hidden; }
 .service-btn:active { transform: scale(0.95); }
 .service-btn h1 { font-size: 36px; }
 .service-btn span { font-weight: 800; font-size: 14px; letter-spacing: 1px; }
+
+/* MODAL OVERLAY FOR POSTING */
+#compose-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; display: flex; justify-content: center; align-items: center; }
+.modal-content { width: 85%; background: #1a1a24; border: 1px solid #32CD32; border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+.modal-content h3 { color: white; margin-bottom: 15px; text-transform: uppercase; font-size: 16px; letter-spacing: 1px; }
+.modal-content input, .modal-content textarea { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #333; color: white; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; outline: none; }
+.modal-content input:focus, .modal-content textarea:focus { border-color: #32CD32; }
+.modal-content textarea { height: 100px; resize: none; }
+.modal-actions { display: flex; gap: 10px; }
+.modal-actions button { flex: 1; padding: 12px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; font-size: 14px; }
+.modal-cancel { background: #333; color: white; }
+.modal-submit { background: #32CD32; color: black; }
