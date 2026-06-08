@@ -4,7 +4,6 @@ local batteryLevel = 100
 local isPhoneDead = false
 local inCall = false
 
--- Background Battery Drain
 CreateThread(function()
     while true do
         Wait(120000) 
@@ -31,15 +30,11 @@ RegisterNetEvent('nexus_phone:client:UpdateBankUI', function(newBalance)
     SendNUIMessage({ type = "updateBank", balance = newBalance })
 end)
 
--- Open Phone Command (Now fetching Live Database Info)
 RegisterCommand('nexus_openphone', function()
     if not phoneOpen and not isPhoneDead then
-        -- Fetch Profile
         lib.callback('nexus_phone:server:GetPlayerProfile', false, function(playerData)
             if playerData then
-                -- Fetch Live Tweets
                 lib.callback('nexus_phone:server:GetTweets', false, function(tweets)
-                    -- Fetch Live Market
                     lib.callback('nexus_phone:server:GetMarketplace', false, function(market)
                         phoneOpen = true
                         SetNuiFocus(true, true)
@@ -67,31 +62,38 @@ RegisterCommand('nexus_closephone', function()
     SendNUIMessage({ type = "closePhone" })
 end, false)
 
-RegisterNUICallback('closePhone', function(data, cb)
-    ExecuteCommand('nexus_closephone')
-    cb('ok')
-end)
+RegisterNUICallback('closePhone', function(data, cb) ExecuteCommand('nexus_closephone') cb('ok') end)
 
+-- NUI Data Relays
 RegisterNUICallback('transferMoney', function(data, cb)
     TriggerServerEvent('nexus_phone:server:TransferMoney', data.target, data.amount)
     cb('ok')
 end)
 
--- VoIP Call Integration
+RegisterNUICallback('postTweet', function(data, cb)
+    TriggerServerEvent('nexus_phone:server:PostTweet', data.message)
+    exports.qbx_core:Notify("Tweet Sent!", "success")
+    cb('ok')
+end)
+
+RegisterNUICallback('postMarket', function(data, cb)
+    TriggerServerEvent('nexus_phone:server:PostMarket', data.title, data.desc, data.price)
+    exports.qbx_core:Notify("Item listed on Marketplace!", "success")
+    cb('ok')
+end)
+
+-- VoIP Relays
 RegisterNUICallback('startCall', function(data, cb)
-    local targetNumber = data.number
-    -- For this version, we generate a secure routing channel based on the number dialed
-    local routingChannel = tonumber(targetNumber) or math.random(1000, 9999)
-    
+    local routingChannel = tonumber(data.number) or math.random(1000, 9999)
     inCall = true
     exports['pma-voice']:setCallChannel(routingChannel)
-    exports.qbx_core:Notify("Connecting to " .. targetNumber .. "...", "success")
+    exports.qbx_core:Notify("Connecting to " .. data.number .. "...", "success")
     cb('ok')
 end)
 
 RegisterNUICallback('endCall', function(data, cb)
     if inCall then
-        exports['pma-voice']:setCallChannel(0) -- Channel 0 drops the call
+        exports['pma-voice']:setCallChannel(0)
         inCall = false
         exports.qbx_core:Notify("Call Ended", "error")
     end
@@ -99,7 +101,6 @@ RegisterNUICallback('endCall', function(data, cb)
 end)
 
 RegisterNUICallback('callService', function(data, cb)
-    -- Dispatch Hook 
     exports.qbx_core:Notify("Dispatch sent to " .. string.upper(data.job), "success")
     cb('ok')
 end)
