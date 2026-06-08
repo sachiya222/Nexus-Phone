@@ -19,7 +19,6 @@
                 
                 <div id="home-screen" class="app-page">
                     <h1 class="nexus-title">NEXUS</h1>
-                    
                     <div class="profile-card">
                         <div class="profile-header">
                             <span id="player-name">Loading...</span>
@@ -30,9 +29,7 @@
                             <span id="player-bank-home">$0</span>
                         </div>
                     </div>
-
-                    <div id="app-grid-container" class="app-grid">
-                        </div>
+                    <div id="app-grid-container" class="app-grid"></div>
                 </div>
 
                 <div id="bank-screen" class="app-page hidden">
@@ -40,13 +37,11 @@
                         <button class="back-btn" onclick="goHome()">◀ Back</button>
                         <h2>NEXUS BANK</h2>
                     </div>
-                    
                     <div class="bank-app-content">
                         <div class="bank-balance-card nexus-glow">
                             <span class="bank-label">Available Balance</span>
                             <h1 id="player-bank-app">$0</h1>
                         </div>
-
                         <div class="transfer-section">
                             <h3>Transfer Funds</h3>
                             <input type="number" id="transfer-id" placeholder="Account ID (Server ID)">
@@ -56,12 +51,72 @@
                     </div>
                 </div>
 
-            </div>
+                <div id="phone-screen" class="app-page hidden">
+                    <div class="app-header">
+                        <button class="back-btn" onclick="goHome()">◀ Back</button>
+                        <h2>DIALER</h2>
+                    </div>
+                    <div class="dialer-container">
+                        <h1 id="dial-display"></h1>
+                        <div class="dial-pad">
+                            <button onclick="pressDial('1')">1</button>
+                            <button onclick="pressDial('2')">2</button>
+                            <button onclick="pressDial('3')">3</button>
+                            <button onclick="pressDial('4')">4</button>
+                            <button onclick="pressDial('5')">5</button>
+                            <button onclick="pressDial('6')">6</button>
+                            <button onclick="pressDial('7')">7</button>
+                            <button onclick="pressDial('8')">8</button>
+                            <button onclick="pressDial('9')">9</button>
+                            <button onclick="pressDial('*')">*</button>
+                            <button onclick="pressDial('0')">0</button>
+                            <button onclick="pressDial('#')">#</button>
+                        </div>
+                        <div class="dial-actions">
+                            <button class="clear-btn" onclick="clearDial()">X</button>
+                            <button class="call-btn nexus-glow" onclick="startCall()">📞</button>
+                        </div>
+                    </div>
+                </div>
 
+                <div id="messages-screen" class="app-page hidden">
+                    <div class="app-header">
+                        <button class="back-btn" onclick="goHome()">◀ Back</button>
+                        <h2>MESSAGES</h2>
+                        <button class="new-msg-btn">+</button>
+                    </div>
+                    <div class="message-list">
+                        <div class="msg-thread">
+                            <div class="msg-avatar">A</div>
+                            <div class="msg-preview">
+                                <h4>555-0192</h4>
+                                <p>Meet me at the generic garage...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings-screen" class="app-page hidden">
+                    <div class="app-header">
+                        <button class="back-btn" onclick="goHome()">◀ Back</button>
+                        <h2>SETTINGS</h2>
+                    </div>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <span>Phone Number</span>
+                            <span id="my-phone-number" class="setting-value">Loading...</span>
+                        </div>
+                        <div class="setting-item">
+                            <span>Streamer Mode</span>
+                            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
             <div id="home-indicator" onclick="goHome()"></div>
         </div>
     </div>
-    
     <script src="app.js"></script>
 </body>
 </html>
