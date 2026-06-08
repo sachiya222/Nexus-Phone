@@ -36,15 +36,18 @@ RegisterCommand('nexus_openphone', function()
             if playerData then
                 lib.callback('nexus_phone:server:GetTweets', false, function(tweets)
                     lib.callback('nexus_phone:server:GetMarketplace', false, function(market)
-                        phoneOpen = true
-                        SetNuiFocus(true, true)
-                        SendNUIMessage({ 
-                            type = "openPhone", 
-                            player = playerData, 
-                            battery = batteryLevel,
-                            tweets = tweets or {},
-                            market = market or {}
-                        })
+                        lib.callback('nexus_phone:server:GetAutoSell', false, function(autosell)
+                            phoneOpen = true
+                            SetNuiFocus(true, true)
+                            SendNUIMessage({ 
+                                type = "openPhone", 
+                                player = playerData, 
+                                battery = batteryLevel,
+                                tweets = tweets or {},
+                                market = market or {},
+                                autosell = autosell or {}
+                            })
+                        end)
                     end)
                 end)
             end
@@ -82,6 +85,12 @@ RegisterNUICallback('postMarket', function(data, cb)
     cb('ok')
 end)
 
+RegisterNUICallback('postAutoSell', function(data, cb)
+    TriggerServerEvent('nexus_phone:server:PostAutoSell', data.vehicle, data.desc, data.price)
+    exports.qbx_core:Notify("Vehicle listed on AutoSell!", "success")
+    cb('ok')
+end)
+
 -- VoIP Relays
 RegisterNUICallback('startCall', function(data, cb)
     local routingChannel = tonumber(data.number) or math.random(1000, 9999)
@@ -100,7 +109,30 @@ RegisterNUICallback('endCall', function(data, cb)
     cb('ok')
 end)
 
+-- Emergency Dispatch Relay
 RegisterNUICallback('callService', function(data, cb)
-    exports.qbx_core:Notify("Dispatch sent to " .. string.upper(data.job), "success")
+    local playerPed = PlayerPedId()
+    local coords = GetEntityCoords(playerPed)
+    
+    TriggerServerEvent('nexus_phone:server:CallService', data.job, coords)
+    exports.qbx_core:Notify("Dispatch sent to " .. string.upper(data.job) .. " units.", "success")
     cb('ok')
+end)
+
+-- Catch Dispatch Alert from Server
+RegisterNetEvent('nexus_phone:client:ReceiveDispatch', function(jobSent, coords)
+    exports.qbx_core:Notify("DISPATCH: 10-71 / Alert from Citizen", "error", 7500)
+    
+    local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+    SetBlipSprite(blip, 161)
+    SetBlipScale(blip, 1.2)
+    SetBlipColour(blip, 1)
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString("Emergency Dispatch Call")
+    EndTextCommandSetBlipName(blip)
+    
+    -- Remove the blip automatically after 2 minutes
+    SetTimeout(120000, function()
+        RemoveBlip(blip)
+    end)
 end)
