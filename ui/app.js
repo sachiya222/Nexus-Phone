@@ -15,6 +15,7 @@ const appRegistry = [
 
 let currentBankBalance = 0;
 let dialNumber = "";
+let inCall = false;
 
 function loadApps() {
     const grid = document.getElementById('app-grid-container');
@@ -39,12 +40,13 @@ function openApp(appId) {
     if (appId === "settings") document.getElementById('settings-screen').classList.remove('hidden');
     if (appId === "nexdate") document.getElementById('nexdate-screen').classList.remove('hidden');
     if (appId === "services") document.getElementById('services-screen').classList.remove('hidden');
+    if (appId === "nextweet") document.getElementById('nextweet-screen').classList.remove('hidden');
+    if (appId === "marketplace") document.getElementById('marketplace-screen').classList.remove('hidden');
     
-    if (appId === "nextweet") { document.getElementById('nextweet-screen').classList.remove('hidden'); loadDummyTweets(); }
-    if (appId === "nexgram") { document.getElementById('nexgram-screen').classList.remove('hidden'); loadDummyGrams(); }
-    if (appId === "marketplace") { document.getElementById('marketplace-screen').classList.remove('hidden'); loadDummyMarket(); }
-    if (appId === "autosell") { document.getElementById('autosell-screen').classList.remove('hidden'); loadDummyAutoSell(); }
-    if (appId === "stocks") { document.getElementById('stocks-screen').classList.remove('hidden'); loadDummyStocks(); }
+    // Static for now until Phase 4
+    if (appId === "nexgram") document.getElementById('nexgram-screen').classList.remove('hidden'); 
+    if (appId === "autosell") document.getElementById('autosell-screen').classList.remove('hidden'); 
+    if (appId === "stocks") document.getElementById('stocks-screen').classList.remove('hidden'); 
 }
 
 function goHome() {
@@ -52,7 +54,6 @@ function goHome() {
     document.getElementById('home-screen').classList.remove('hidden');
 }
 
-// --- Bank & Dialer Logic ---
 function processTransfer() {
     let targetId = document.getElementById('transfer-id').value;
     let amount = document.getElementById('transfer-amount').value;
@@ -68,61 +69,75 @@ function processTransfer() {
     });
 }
 
-function pressDial(num) { if (dialNumber.length < 10) { dialNumber += num; document.getElementById('dial-display').innerText = dialNumber; } }
-function clearDial() { dialNumber = dialNumber.slice(0, -1); document.getElementById('dial-display').innerText = dialNumber; }
+// Dialer & VoIP
+function pressDial(num) { if (dialNumber.length < 10 && !inCall) { dialNumber += num; document.getElementById('dial-display').innerText = dialNumber; } }
+function clearDial() { if (!inCall) { dialNumber = dialNumber.slice(0, -1); document.getElementById('dial-display').innerText = dialNumber; } }
+
 function startCall() {
-    if(dialNumber.length > 0) {
+    if(dialNumber.length > 0 && !inCall) {
+        inCall = true;
+        document.getElementById('dial-display').style.color = "#32CD32"; // Turn number green
+        document.querySelector('.call-btn').innerText = "🛑"; // Change to hangup icon
+        document.querySelector('.call-btn').style.background = "#e74c3c"; // Red hangup
         fetch(`https://${GetParentResourceName()}/startCall`, { method: 'POST', body: JSON.stringify({ number: dialNumber }) });
+    } else if (inCall) {
+        inCall = false;
+        dialNumber = "";
+        document.getElementById('dial-display').innerText = "";
+        document.getElementById('dial-display').style.color = "white";
+        document.querySelector('.call-btn').innerText = "📞";
+        document.querySelector('.call-btn').style.background = "#32CD32";
+        fetch(`https://${GetParentResourceName()}/endCall`, { method: 'POST', body: JSON.stringify({}) });
     }
 }
 
-// --- Emergency Services Logic ---
 function callService(jobName) {
     fetch(`https://${GetParentResourceName()}/callService`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
         body: JSON.stringify({ job: jobName })
     }).then(() => goHome());
 }
 
-// --- Economy & Social Dummy Data Injectors ---
-function loadDummyTweets() {
-    document.getElementById('tweet-feed').innerHTML = `
-        <div class="tweet"><div class="tweet-header"><div class="tweet-avatar" style="background:#32CD32"></div><span class="tweet-user">Nexus Mayor</span><span class="tweet-handle">@CityHall</span></div><div class="tweet-content">Taxes have been lowered by 2% city-wide. Enjoy the weekend! 🏙️📉</div></div>
-    `;
-}
-function loadDummyGrams() {
-    document.getElementById('gram-feed').innerHTML = `
-        <div class="gram-post"><div class="gram-header"><div class="tweet-avatar" style="background:#9b59b6"></div><span class="tweet-user">StreetKing</span></div><div class="gram-image">Car Pic</div><div class="gram-caption"><b>StreetKing</b> Just picked up the new GTR. 🏎️💨</div></div>
-    `;
-}
-function loadDummyMarket() {
-    document.getElementById('market-feed').innerHTML = `
-        <div class="market-item"><div class="market-icon">📱</div><div class="market-name">Hacked Datapad</div><div class="market-price">$5,000</div><button class="buy-btn">BUY</button></div>
-        <div class="market-item"><div class="market-icon">💊</div><div class="market-name">Bandages (x10)</div><div class="market-price">$500</div><button class="buy-btn">BUY</button></div>
-    `;
-}
-function loadDummyAutoSell() {
-    document.getElementById('autosell-feed').innerHTML = `
-        <div class="car-card">
-            <div class="car-img">Elegy Retro Custom Image</div>
-            <div class="car-details">
-                <div class="car-title"><span>Elegy Retro</span><span style="color:#32CD32">$85,000</span></div>
-                <span class="car-seller">Seller: Ghost#1992</span>
-                <button class="buy-btn" style="background:transparent; border:1px solid #32CD32; color:#32CD32;">CONTACT SELLER</button>
-            </div>
-        </div>
-    `;
-}
-function loadDummyStocks() {
-    document.getElementById('stock-feed').innerHTML = `
-        <div class="stock-row"><div class="stock-info"><h4>NEXUS</h4><span>Nexus City Bond</span></div><div class="stock-price"><h4>$124.50</h4><span class="stock-change">+2.4%</span></div></div>
-        <div class="stock-row"><div class="stock-info"><h4>QBIT</h4><span>Qbox Crypto</span></div><div class="stock-price"><h4>$8,932.10</h4><span class="stock-change change-neg">-1.2%</span></div></div>
-        <div class="stock-row"><div class="stock-info"><h4>LIME</h4><span>Lime Tech</span></div><div class="stock-price"><h4>$45.00</h4><span class="stock-change">+8.9%</span></div></div>
-    `;
+// Live Data Injectors
+function injectLiveTweets(tweetsArray) {
+    const feed = document.getElementById('tweet-feed');
+    feed.innerHTML = "";
+    if (tweetsArray.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; color:#888; margin-top:20px;">No tweets yet. Be the first!</div>`;
+        return;
+    }
+    tweetsArray.forEach(tweet => {
+        feed.innerHTML += `
+            <div class="tweet">
+                <div class="tweet-header">
+                    <div class="tweet-avatar" style="background:#32CD32"></div>
+                    <span class="tweet-user">${tweet.firstName} ${tweet.lastName}</span>
+                    <span class="tweet-handle">@${tweet.handle}</span>
+                </div>
+                <div class="tweet-content">${tweet.message}</div>
+            </div>`;
+    });
 }
 
-// --- FiveM Client Bridge ---
+function injectLiveMarket(marketArray) {
+    const feed = document.getElementById('market-feed');
+    feed.innerHTML = "";
+    if (marketArray.length === 0) {
+        feed.innerHTML = `<div style="text-align:center; color:#888; grid-column:span 2; margin-top:20px;">Market is empty.</div>`;
+        return;
+    }
+    marketArray.forEach(item => {
+        feed.innerHTML += `
+            <div class="market-item">
+                <div class="market-icon">📦</div>
+                <div class="market-name">${item.item_name}</div>
+                <div class="market-price">$${item.price.toLocaleString('en-US')}</div>
+                <span style="font-size:10px; color:#888; margin-bottom:5px;">Seller: ${item.seller_name}</span>
+                <button class="buy-btn">BUY</button>
+            </div>`;
+    });
+}
+
 window.addEventListener('message', function(event) {
     let item = event.data;
     
@@ -135,6 +150,10 @@ window.addEventListener('message', function(event) {
         document.getElementById('player-bank-app').innerText = "$" + currentBankBalance.toLocaleString('en-US');
         document.getElementById('battery-level').innerText = item.battery + "%";
         document.getElementById('my-phone-number').innerText = item.player.phoneNumber || "Unknown";
+        
+        // Inject the Live SQL Data into the UI
+        injectLiveTweets(item.tweets);
+        injectLiveMarket(item.market);
         
         loadApps();
         document.getElementById('phone-wrapper').classList.remove('hidden');
